@@ -1,101 +1,115 @@
+import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ProductCard from "@/components/product-card";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function HomePage() {
+  const supabase = createClient();
+
+  const { data: products } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  const featured = products?.slice(0, 4) || [];
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                Wear Your Story with{" "}
+                <span className="text-primary">Tee World</span>
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-md">
+                Discover a world where fashion meets individuality. At Tee World, we craft timeless designs that celebrate your unique personality.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/products">
+                  <Button size="lg" className="gap-2">
+                    Shop Now <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/products?sort=new">
+                  <Button size="lg" variant="outline">
+                    New Arrivals
+                  </Button>
+                </Link>
+              </div>
+            </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className="relative hidden lg:block">
+              <div className="relative h-[480px]">
+                <div className="absolute top-0 right-0 w-[280px] h-[380px] rounded-2xl overflow-hidden shadow-2xl">
+                  <Image
+                    src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop"
+                    alt="Fashion model"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+                <div className="absolute bottom-0 left-12 w-[200px] h-[260px] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+                  <Image
+                    src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=400&h=500&fit=crop"
+                    alt="Fashion detail"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="absolute top-12 left-0 w-12 h-12 grid grid-cols-3 gap-1 opacity-30">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i} className="w-2 h-2 bg-primary rounded-full" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Decorative text */}
+        <div className="hidden xl:block absolute -bottom-4 left-0 right-0 overflow-hidden pointer-events-none">
+          <p className="text-[120px] font-bold text-muted/20 whitespace-nowrap tracking-wider">
+            GO WITH TREND
+          </p>
+        </div>
+      </section>
+
+      {/* New Arrivals */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold">
+            <span className="text-primary">New</span> Arrivals
+          </h2>
+          <p className="text-muted-foreground mt-2">Check out our latest drops</p>
+        </div>
+
+        {featured.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featured.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            No products yet. Add some products from the admin panel.
+          </div>
+        )}
+
+        <div className="text-center mt-10">
+          <Link href="/products">
+            <Button variant="outline" size="lg" className="gap-2">
+              View All Products <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
