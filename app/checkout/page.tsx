@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 
 interface RazorpayInstance {
   open: () => void;
+  on: (event: string, callback: () => void) => void;
 }
 
 declare global {
@@ -81,13 +82,26 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
+      const cartItems = items.map((item) => ({
+        product_id: item.product.id,
+        quantity: item.quantity,
+        price: item.product.price,
+      }));
+
       const res = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: totalPrice }),
+        body: JSON.stringify({
+          amount: totalPrice,
+          items: cartItems,
+          delivery,
+        }),
       });
 
-      const { orderId } = await res.json();
+      const { orderId, pendingOrderId } = await res.json();
+      if (!orderId || !pendingOrderId) {
+        throw new Error("Failed to create order");
+      }
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -96,32 +110,29 @@ export default function CheckoutPage() {
         name: "TeeWorld",
         description: "Order Payment",
         order_id: orderId,
-        handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
-          const verifyRes = await fetch("/api/verify-payment", {
+        handler: async function (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) {
+          // Fast-path verification (webhook is the source of truth)
+          await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              items: items.map((item) => ({
-                product_id: item.product.id,
-                quantity: item.quantity,
-                price: item.product.price,
-              })),
-              total: totalPrice,
-              delivery,
+              pending_order_id: pendingOrderId,
             }),
           });
-
-          const verifyData = await verifyRes.json();
-
-          if (verifyData.success) {
-            clearCart();
-            router.push(`/orders?success=true&order=${verifyData.orderId}`);
-          } else {
-            alert("Payment verification failed. Please contact support.");
-          }
+          clearCart();
+          router.push(`/thank-you?pending_order_id=${pendingOrderId}`);
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          },
         },
         prefill: {
           name: delivery.name,
@@ -138,7 +149,6 @@ export default function CheckoutPage() {
     } catch (error) {
       console.error("Payment error:", error);
       alert("Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -254,7 +264,7 @@ export default function CheckoutPage() {
                       {item.color && ` · Color: ${item.color}`}
                     </p>
                     <p className="text-sm font-medium mt-1">
-                      ₹{(item.product.price * item.quantity).toFixed(2)}
+                      {(item.product.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -269,7 +279,7 @@ export default function CheckoutPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>₹{totalPrice.toFixed(2)}</span>
+                  <span>{totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
@@ -278,7 +288,7 @@ export default function CheckoutPage() {
                 <Separator />
                 <div className="flex justify-between font-semibold text-base">
                   <span>Total</span>
-                  <span>₹{totalPrice.toFixed(2)}</span>
+                  <span>{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
 

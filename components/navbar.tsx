@@ -108,7 +108,8 @@ export default function Navbar() {
       const { data } = await supabase.auth.getUser();
       if (data.user) {
         setUser(data.user as unknown as User);
-        setIsAdmin(data.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+        const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase()?.trim();
+        setIsAdmin(adminEmail ? data.user.email?.toLowerCase() === adminEmail : false);
       }
     };
     getUser();
@@ -116,7 +117,8 @@ export default function Navbar() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user as unknown as User);
-        setIsAdmin(session.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+        const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase()?.trim();
+        setIsAdmin(adminEmail ? session.user.email?.toLowerCase() === adminEmail : false);
       } else {
         setUser(null);
         setIsAdmin(false);
@@ -129,9 +131,10 @@ export default function Navbar() {
   }, [supabase]);
 
   const handleSignIn = async () => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${appUrl}/auth/callback` },
     });
   };
 
