@@ -26,3 +26,8 @@ DROP POLICY IF EXISTS "Users can view own pending orders" ON pending_orders;
 CREATE POLICY "Users can view own pending orders"
   ON pending_orders FOR SELECT
   USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can insert own pending orders" ON pending_orders;
+CREATE POLICY "Users can insert own pending orders"
+  ON pending_orders FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
