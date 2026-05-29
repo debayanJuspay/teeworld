@@ -17,7 +17,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   const supabase = createClient();
 
-  let dbQuery = supabase.from("products").select("*");
+  let dbQuery = supabase.from("products").select("*").eq("status", "active");
 
   if (query) {
     dbQuery = dbQuery.ilike("title", `%${query}%`);

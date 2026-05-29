@@ -32,7 +32,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .eq("id", params.id)
     .single();
 
-  if (!product) {
+  if (!product || product.status === "draft") {
     notFound();
   }
 

@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS products (
   stock INTEGER NOT NULL DEFAULT 0,
   sizes TEXT[] DEFAULT ARRAY['S', 'M', 'L', 'XL'],
   colors TEXT[] DEFAULT ARRAY['Black', 'White', 'Gray'],
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'draft')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

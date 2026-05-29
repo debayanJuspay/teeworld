@@ -11,6 +11,7 @@ export default async function HomePage() {
   const { data: products } = await supabase
     .from("products")
     .select("*")
+    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(8);
 

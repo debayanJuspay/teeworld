@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -68,7 +69,12 @@ export default function ProductsClient({ initialProducts }: ProductsClientProps)
                     </div>
                   </TableCell>
                   <TableCell className="font-medium max-w-[200px] truncate">
-                    {product.title}
+                    <div className="flex items-center gap-2">
+                      {product.title}
+                      {product.status === "draft" && (
+                        <Badge variant="secondary">Draft</Badge>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>₹{product.price}</TableCell>
                   <TableCell>{product.stock}</TableCell>

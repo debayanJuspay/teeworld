@@ -36,6 +36,7 @@ export async function createProduct(formData: FormData) {
   const sizes = sizesRaw ? sizesRaw.split(",").map((s) => s.trim()) : ["S", "M", "L", "XL"];
   const colorsRaw = getFormValue(formData, "colors");
   const colors = colorsRaw ? colorsRaw.split(",").map((s) => s.trim()) : ["Black", "White", "Gray"];
+  const status = getFormValue(formData, "status") || "active";
 
   if (!title) throw new Error("Title is required");
   if (!description) throw new Error("Description is required");
@@ -50,6 +51,7 @@ export async function createProduct(formData: FormData) {
     stock,
     sizes,
     colors,
+    status,
   });
 
   if (error) throw new Error(error.message);
@@ -77,6 +79,7 @@ export async function updateProduct(id: string, formData: FormData) {
   const sizes = sizesRaw ? sizesRaw.split(",").map((s) => s.trim()) : ["S", "M", "L", "XL"];
   const colorsRaw = getFormValue(formData, "colors");
   const colors = colorsRaw ? colorsRaw.split(",").map((s) => s.trim()) : ["Black", "White", "Gray"];
+  const status = getFormValue(formData, "status") || "active";
 
   if (!title) throw new Error("Title is required");
   if (!description) throw new Error("Description is required");
@@ -93,6 +96,7 @@ export async function updateProduct(id: string, formData: FormData) {
       stock,
       sizes,
       colors,
+      status,
     })
     .eq("id", id);
 

@@ -105,6 +105,21 @@ export default function ProductForm({
           />
         </div>
       </div>
+      <div>
+        <Label htmlFor="status">Status</Label>
+        <select
+          id="status"
+          name="status"
+          defaultValue={product?.status || "active"}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+        </select>
+        <p className="text-xs text-muted-foreground mt-1">
+          Draft products are hidden from the storefront.
+        </p>
+      </div>
       <div className="flex justify-end gap-3 pt-2">
         <Button type="submit" disabled={submitting}>
           {submitting ? "Saving..." : product ? "Update Product" : "Create Product"}

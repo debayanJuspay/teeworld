@@ -9,6 +9,7 @@ export interface Product {
   created_at: string;
   colors?: string[];
   sizes?: string[];
+  status?: "active" | "draft";
 }
 
 export interface CartItem {
