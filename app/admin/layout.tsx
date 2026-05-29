@@ -6,6 +6,7 @@ import {
   Package,
   ShoppingBag,
   ArrowLeft,
+  UserX,
 } from "lucide-react";
 
 export default async function AdminLayout({
@@ -27,6 +28,7 @@ export default async function AdminLayout({
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+    { href: "/admin/abandoned-checkouts", label: "Abandoned", icon: UserX },
   ];
 
   return (
