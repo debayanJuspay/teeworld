@@ -49,7 +49,7 @@ export default async function HomePage() {
               <div className="relative h-[480px]">
                 <div className="absolute top-0 right-0 w-[280px] h-[380px] rounded-2xl overflow-hidden shadow-2xl">
                   <Image
-                    src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop"
+                    src="https://jbpuzaxunjsbbagtlwzj.supabase.co/storage/v1/object/tees/1780074162391-b3of8yre.png"
                     alt="Fashion model"
                     fill
                     className="object-cover"
