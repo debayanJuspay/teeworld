@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-2">9. Contact Us</h2>
           <p>
-            If you have any questions or concerns about this Privacy Policy, please reach out to us at hello@teeworld.com or call +91 96093 84607.
+            If you have any questions or concerns about this Privacy Policy, please reach out to us at business.teeworld@gmail.com or call +91 96093 84607.
           </p>
         </section>
       </div>

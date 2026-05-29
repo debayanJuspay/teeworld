@@ -20,7 +20,7 @@ export default function ContactPage() {
           <CardContent className="flex flex-col items-center pt-6">
             <Mail className="h-8 w-8 text-primary mb-3" />
             <h3 className="font-semibold">Email</h3>
-            <p className="text-sm text-muted-foreground">hello@teeworld.com</p>
+            <p className="text-sm text-muted-foreground">business.teeworld@gmail.com</p>
           </CardContent>
         </Card>
         <Card>

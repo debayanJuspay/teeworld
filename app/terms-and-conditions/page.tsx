@@ -70,7 +70,7 @@ export default function TermsAndConditionsPage() {
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-2">9. Contact</h2>
           <p>
-            For any questions regarding these terms, please contact us at hello@teeworld.com or call +91 96093 84607.
+            For any questions regarding these terms, please contact us at business.teeworld@gmail.com or call +91 96093 84607.
           </p>
         </section>
       </div>

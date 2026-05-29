@@ -48,7 +48,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>hello@teeworld.com</li>
+              <li>business.teeworld@gmail.com</li>
               <li>+91 96093 84607</li>
               <li>Sutragarh, Lankapara, Santipur, Nadia, WB</li>
             </ul>
