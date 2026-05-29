@@ -107,6 +107,37 @@ export async function deleteProduct(id: string) {
   await verifyAdmin();
   const service = createServiceClient();
 
+  // Fetch product to get images before deletion
+  const { data: product } = await service
+    .from("products")
+    .select("image_urls")
+    .eq("id", id)
+    .single();
+
+  // Delete images from storage
+  if (product?.image_urls && product.image_urls.length > 0) {
+    const paths = product.image_urls
+      .map((url: string) => {
+        try {
+          const pathname = new URL(url).pathname;
+          const segments = pathname.split("/");
+          // URLs are like /storage/v1/object/public/tees/<filename>
+          const bucketIndex = segments.indexOf("tees");
+          if (bucketIndex !== -1 && bucketIndex < segments.length - 1) {
+            return segments.slice(bucketIndex + 1).join("/");
+          }
+          return null;
+        } catch {
+          return null;
+        }
+      })
+      .filter((p: string | null): p is string => p !== null);
+
+    if (paths.length > 0) {
+      await service.storage.from("tees").remove(paths);
+    }
+  }
+
   const { error } = await service.from("products").delete().eq("id", id);
 
   if (error) throw new Error(error.message);
