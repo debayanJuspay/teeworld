@@ -5,6 +5,7 @@ import { CartProvider } from "@/hooks/use-cart";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import CartDrawer from "@/components/cart-drawer";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Footer />
           <CartDrawer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
