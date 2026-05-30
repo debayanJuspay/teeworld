@@ -3,19 +3,19 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/product-card";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+
+export const revalidate = 60;
 
 export default async function HomePage() {
-  const supabase = createClient();
+  const supabase = createPublicClient();
 
-  const { data: products } = await supabase
+  const { data: featured } = await supabase
     .from("products")
     .select("*")
     .eq("status", "active")
     .order("created_at", { ascending: false })
-    .limit(8);
-
-  const featured = products?.slice(0, 4) || [];
+    .limit(4);
 
   return (
     <div>
@@ -91,7 +91,7 @@ export default async function HomePage() {
           <p className="text-muted-foreground mt-2">Check out our latest drops</p>
         </div>
 
-        {featured.length > 0 ? (
+        {featured && featured.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featured.map((product) => (
               <ProductCard key={product.id} product={product} />

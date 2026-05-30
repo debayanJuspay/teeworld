@@ -56,11 +56,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true }, { status: 200 });
       }
 
-      // Check if real order already exists (double-fire safety)
+      // Check if real order already exists (double-fire safety — only look at last 60s)
+      const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
       const { data: existingOrder } = await supabase
         .from("orders")
         .select("id")
         .eq("user_id", pending.user_id)
+        .gte("created_at", oneMinuteAgo)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -81,6 +83,7 @@ export async function POST(req: NextRequest) {
         .insert({
           user_id: pending.user_id,
           status: "Paid",
+          payment_status: "captured",
           total: pending.total,
           customer_name: delivery?.name || "",
           customer_email: delivery?.email || "",
@@ -98,16 +101,20 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "DB error" }, { status: 500 });
       }
 
-      // Insert order items
+      // Insert order items with product snapshot (title + image)
       const items = (pending.items as Array<{
         product_id: string;
+        title: string;
         quantity: number;
         price: number;
+        image_url?: string;
       }>) || [];
 
       const orderItems = items.map((item) => ({
         order_id: order.id,
         product_id: item.product_id,
+        title: item.title || "Unknown Product",
+        image_url: item.image_url || null,
         quantity: item.quantity,
         price: item.price,
       }));

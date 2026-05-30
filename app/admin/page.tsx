@@ -10,13 +10,14 @@ export default async function AdminDashboard() {
   const supabase = createClient();
 
   const [{ count: totalOrders }, { count: totalProducts }] = await Promise.all([
-    supabase.from("orders").select("*", { count: "exact", head: true }),
+    supabase.from("orders").select("*", { count: "exact", head: true }).eq("payment_status", "captured"),
     supabase.from("products").select("*", { count: "exact", head: true }),
   ]);
 
   const { data: recentOrders } = await supabase
     .from("orders")
     .select("*")
+    .eq("payment_status", "captured")
     .order("created_at", { ascending: false })
     .limit(5);
 

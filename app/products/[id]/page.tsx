@@ -1,17 +1,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Truck, RotateCcw, Shield } from "lucide-react";
 import AddToCartButton from "@/components/add-to-cart-button";
 import ProductImageGallery from "@/components/product-image-gallery";
 
+export const revalidate = 60;
+
 interface ProductPageProps {
   params: { id: string };
 }
 
+export async function generateStaticParams() {
+  const supabase = createPublicClient();
+  const { data: products } = await supabase
+    .from("products")
+    .select("id")
+    .eq("status", "active");
+  return products?.map((p) => ({ id: p.id })) || [];
+}
+
 export async function generateMetadata({ params }: ProductPageProps) {
-  const supabase = createClient();
+  const supabase = createPublicClient();
   const { data: product } = await supabase
     .from("products")
     .select("*")
@@ -24,7 +35,7 @@ export async function generateMetadata({ params }: ProductPageProps) {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const supabase = createClient();
+  const supabase = createPublicClient();
 
   const { data: product } = await supabase
     .from("products")

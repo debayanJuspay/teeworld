@@ -87,6 +87,7 @@ export default function CheckoutPage() {
         title: item.product.title,
         quantity: item.quantity,
         price: item.product.price,
+        image_url: item.product.image_urls?.[0] || null,
       }));
 
       const res = await fetch("/api/create-order", {
@@ -111,13 +112,14 @@ export default function CheckoutPage() {
         name: "TeeWorld",
         description: "Order Payment",
         order_id: orderId,
-        handler: async function (response: {
+        handler: function (response: {
           razorpay_order_id: string;
           razorpay_payment_id: string;
           razorpay_signature: string;
         }) {
-          // Fast-path verification (webhook is the source of truth)
-          await fetch("/api/verify-payment", {
+          // Fire-and-forget verification — webhook is the source of truth.
+          // Do NOT await so the redirect happens instantly.
+          fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -126,7 +128,7 @@ export default function CheckoutPage() {
               razorpay_signature: response.razorpay_signature,
               pending_order_id: pendingOrderId,
             }),
-          });
+          }).catch(console.error);
           clearCart();
           router.push(`/thank-you?pending_order_id=${pendingOrderId}`);
         },

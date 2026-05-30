@@ -23,6 +23,7 @@ export interface Order {
   id: string;
   user_id: string;
   status: "Pending" | "Paid" | "Shipped" | "Delivered";
+  payment_status?: "pending" | "captured" | "failed" | "refunded";
   total: number;
   created_at: string;
   items?: OrderItem[];
@@ -41,6 +42,8 @@ export interface OrderItem {
   product_id: string;
   quantity: number;
   price: number;
+  title?: string;
+  image_url?: string;
   product?: Product;
 }
 

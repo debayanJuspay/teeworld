@@ -119,7 +119,7 @@ export default async function OrdersPage({
                           href={`/products/${item.product_id}`}
                           className="font-medium hover:text-primary transition-colors"
                         >
-                          {item.product?.title || "Unknown Product"}
+                          {item.title || item.product?.title || "Unknown Product"}
                         </Link>
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>

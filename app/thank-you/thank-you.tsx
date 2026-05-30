@@ -20,7 +20,7 @@ export default function ThankYou() {
     }
 
     let attempts = 0;
-    const maxAttempts = 15;
+    const maxAttempts = 30;
 
     const poll = async () => {
       const { data: pending } = await supabase
@@ -45,7 +45,7 @@ export default function ThankYou() {
         return;
       }
 
-      setTimeout(poll, 2000);
+      setTimeout(poll, 300);
     };
 
     poll();

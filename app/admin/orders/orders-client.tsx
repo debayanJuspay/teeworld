@@ -127,7 +127,7 @@ export default function OrdersClient({ initialOrders }: OrdersClientProps) {
                               href={`/products/${item.product_id}`}
                               className="hover:text-primary transition-colors"
                             >
-                              {item.product?.title || "Unknown Product"}
+                              {item.title || item.product?.title || "Unknown Product"}
                             </Link>
                           </TableCell>
                           <TableCell className="text-right">

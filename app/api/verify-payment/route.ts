@@ -54,8 +54,10 @@ export async function POST(req: NextRequest) {
         const delivery = (pending.delivery || {}) as Record<string, string>;
         const items = (pending.items || []) as Array<{
           product_id: string;
+          title: string;
           quantity: number;
           price: number;
+          image_url?: string;
         }>;
 
         const { data: order, error: orderError } = await supabase
@@ -63,6 +65,7 @@ export async function POST(req: NextRequest) {
           .insert({
             user_id: pending.user_id,
             status: "Paid",
+            payment_status: "captured",
             total: pending.total,
             customer_name: delivery.name || "",
             customer_email: delivery.email || "",
@@ -86,6 +89,8 @@ export async function POST(req: NextRequest) {
         const orderItems = items.map((item) => ({
           order_id: order.id,
           product_id: item.product_id,
+          title: item.title || "Unknown Product",
+          image_url: item.image_url || null,
           quantity: item.quantity,
           price: item.price,
         }));
