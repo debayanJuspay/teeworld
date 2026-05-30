@@ -88,6 +88,8 @@ export default function CheckoutPage() {
         quantity: item.quantity,
         price: item.product.price,
         image_url: item.product.image_urls?.[0] || null,
+        size: item.size || null,
+        color: item.color || null,
       }));
 
       const res = await fetch("/api/create-order", {

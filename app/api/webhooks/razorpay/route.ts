@@ -101,13 +101,15 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "DB error" }, { status: 500 });
       }
 
-      // Insert order items with product snapshot (title + image)
+      // Insert order items with product snapshot (title + image + size + color)
       const items = (pending.items as Array<{
         product_id: string;
         title: string;
         quantity: number;
         price: number;
         image_url?: string;
+        size?: string;
+        color?: string;
       }>) || [];
 
       const orderItems = items.map((item) => ({
@@ -115,6 +117,8 @@ export async function POST(req: NextRequest) {
         product_id: item.product_id,
         title: item.title || "Unknown Product",
         image_url: item.image_url || null,
+        size: item.size || null,
+        color: item.color || null,
         quantity: item.quantity,
         price: item.price,
       }));

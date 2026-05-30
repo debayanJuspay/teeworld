@@ -121,6 +121,13 @@ export default async function OrdersPage({
                         >
                           {item.title || item.product?.title || "Unknown Product"}
                         </Link>
+                        {(item.size || item.color) && (
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {item.size && <span>Size: {item.size}</span>}
+                            {item.size && item.color && <span className="mx-1">·</span>}
+                            {item.color && <span>Color: {item.color}</span>}
+                          </p>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
                       <TableCell className="text-right">₹{item.price}</TableCell>

@@ -58,6 +58,8 @@ export async function POST(req: NextRequest) {
           quantity: number;
           price: number;
           image_url?: string;
+          size?: string;
+          color?: string;
         }>;
 
         const { data: order, error: orderError } = await supabase
@@ -91,6 +93,8 @@ export async function POST(req: NextRequest) {
           product_id: item.product_id,
           title: item.title || "Unknown Product",
           image_url: item.image_url || null,
+          size: item.size || null,
+          color: item.color || null,
           quantity: item.quantity,
           price: item.price,
         }));
