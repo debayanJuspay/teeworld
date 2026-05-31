@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Globe, MessageCircle, Share2 } from "lucide-react";
+import { MessageCircle, Share2 } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -14,13 +14,17 @@ export default function Footer() {
               Premium streetwear for the bold and authentic. Crafted with passion, worn with pride.
             </p>
             <div className="flex gap-3 pt-2">
-              <a href="#" className="p-2 hover:bg-muted rounded-full transition-colors">
-                <Globe className="h-4 w-4" />
+              <a href="https://www.instagram.com/business.teeworld/" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-muted rounded-full transition-colors" aria-label="Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
               </a>
-              <a href="#" className="p-2 hover:bg-muted rounded-full transition-colors">
+              <a href="#" className="p-2 hover:bg-muted rounded-full transition-colors" aria-label="WhatsApp">
                 <MessageCircle className="h-4 w-4" />
               </a>
-              <a href="#" className="p-2 hover:bg-muted rounded-full transition-colors">
+              <a href="#" className="p-2 hover:bg-muted rounded-full transition-colors" aria-label="Share">
                 <Share2 className="h-4 w-4" />
               </a>
             </div>
