@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Script from "next/script";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,11 +25,12 @@ declare global {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, loaded: cartLoaded } = useCart();
   const [loading, setLoading] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: { full_name?: string } } | null>(null);
-  const supabase = createClient();
+  // Memoize Supabase client so the reference is stable across renders
+  const supabase = useMemo(() => createClient(), []);
 
   const [delivery, setDelivery] = useState({
     name: "",
@@ -42,19 +43,31 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) {
-        router.push("/products");
-        return;
-      }
-      setUser(data.user);
-      setDelivery((d) => ({
-        ...d,
-        name: data.user?.user_metadata?.full_name || "",
-        email: data.user?.email || "",
-      }));
-    });
-  }, [router, supabase]);
+    supabase.auth.getUser()
+      .then(({ data, error }) => {
+        if (error || !data.user) {
+          setUser(null);
+        } else {
+          setUser(data.user);
+          setDelivery((d) => ({
+            ...d,
+            name: data.user?.user_metadata?.full_name || "",
+            email: data.user?.email || "",
+          }));
+        }
+      })
+      .catch(() => setUser(null));
+  }, [supabase]);
+
+  // Wait for cart to load from localStorage before deciding it's empty
+  if (!cartLoaded) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-20 text-center">
+        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+        <p className="text-muted-foreground">Loading your cart...</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (

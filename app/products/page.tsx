@@ -19,7 +19,8 @@ const PAGE_SIZE = 24;
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const sort = searchParams.sort || "new";
   const query = searchParams.q || "";
-  const pageNum = Math.max(1, parseInt(searchParams.page || "1", 10));
+  const parsedPage = parseInt(searchParams.page || "1", 10);
+  const pageNum = Number.isNaN(parsedPage) ? 1 : Math.max(1, parsedPage);
   const offset = (pageNum - 1) * PAGE_SIZE;
 
   const supabase = createPublicClient();
